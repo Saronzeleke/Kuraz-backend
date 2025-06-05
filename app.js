@@ -6,13 +6,10 @@ const app = express();
 const port = 3000;
 const dataFile = path.join(__dirname, "tasks.json");
 
-// Middleware
 app.use(express.json());
 
-// Initialize tasks
 let tasks = [];
 
-// Load tasks from file
 async function loadTasks() {
   try {
     const data = await fs.readFile(dataFile, "utf8");
@@ -26,18 +23,15 @@ async function loadTasks() {
   }
 }
 
-// Save tasks to file
 async function saveTasks() {
   await fs.writeFile(dataFile, JSON.stringify(tasks, null, 2));
 }
-
-// API Routes
-// GET all tasks
+// To get(Retrive) new task
 app.get("/api/tasks", (req, res) => {
   res.json(tasks);
 });
 
-// POST new task
+// To post(create) new task
 app.post("/api/tasks", async (req, res) => {
   const { title } = req.body;
 
@@ -57,7 +51,7 @@ app.post("/api/tasks", async (req, res) => {
   res.status(201).json(newTask);
 });
 
-// PUT mark task as completed
+// To put(update) the file
 app.put("/api/tasks/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   const task = tasks.find((t) => t.id === id);
@@ -71,7 +65,7 @@ app.put("/api/tasks/:id", async (req, res) => {
   res.json(task);
 });
 
-// DELETE task
+//  To delete task
 app.delete("/api/tasks/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   const index = tasks.findIndex((t) => t.id === id);
@@ -85,7 +79,7 @@ app.delete("/api/tasks/:id", async (req, res) => {
   res.status(204).end();
 });
 
-// Bonus: Filter tasks
+// To filter tasks
 app.get("/api/tasks/filter", (req, res) => {
   const { completed } = req.query;
   let filteredTasks = tasks;
@@ -99,7 +93,7 @@ app.get("/api/tasks/filter", (req, res) => {
   res.json(filteredTasks);
 });
 
-// Start server
+// To start server
 loadTasks().then(() => {
   app.listen(port, () => {
     console.log(`🚀 API running at http://localhost:${port}/api/tasks`);
